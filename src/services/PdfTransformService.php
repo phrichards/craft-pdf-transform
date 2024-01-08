@@ -108,7 +108,12 @@ class PdfTransformService extends Component
 
      $pathService = Craft::$app->getPath();
      $tempPath = $pathService->getTempPath(true) . '/' . mt_rand(0, 9999999) . '.png';
-     file_put_contents($tempPath, file_get_contents($asset->url));
+     $path = str_replace("@webroot", "", $asset->volume->fs->path);
+    if (@file_get_contents($asset->url)) {
+      file_put_contents($tempPath, file_get_contents($asset->url));
+    } else {
+      file_put_contents($tempPath, file_get_contents(getenv("WEB_ROOT_PATH") . '/' . $path . '/' . $asset->url));
+    }
 
      $tempPathTransform = $pathService->getTempPath(true) . '/' . $filename;
 
@@ -144,3 +149,4 @@ class PdfTransformService extends Component
    }
 
 }
+
